@@ -77,17 +77,19 @@
                     android:id="@+id/editTextIp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
                     android:hint="@string/ip"
-                    android:singleLine="true" />
+                    android:digits="0123456789."
+                    android:maxLines="1" />
+<!--                    android:ems="10"-->
 
                 <EditText
                     android:id="@+id/editTextPort"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
+                    android:inputType="number"
                     android:hint="@string/port"
-                    android:inputType="number" />
+                    android:ems="10"
+                    />
             </LinearLayout>
 
         </LinearLayout>

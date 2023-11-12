@@ -15,29 +15,49 @@ import kotlin.concurrent.thread
 object ServerSocketHandler
 {
 
+    private lateinit var imageReceivedCallback: ImageReceivedCallback
+    private var serverThread: Thread? = null
+    private var isServerRunning = false
+
+    fun init(callback: ImageReceivedCallback) {
+        imageReceivedCallback = callback
+    }
     fun startServer(serverPort: Int)
     {
-        try {
-            val serverSocket = ServerSocket(serverPort)
-            println("Server listening on port $serverPort")
+        // Check if the server thread is already running
+        if (serverThread == null || !serverThread!!.isAlive) {
+            // Create a new thread only if the previous one is not running
+            serverThread = thread(start = true) {
+                try {
+                    val serverSocket = ServerSocket(serverPort)
+                    isServerRunning = true
+                    println("Server listening on port $serverPort")
 
-            while (true) {
-                val clientSocket = serverSocket.accept()
+                    while (isServerRunning) {
+                        val clientSocket = serverSocket.accept()
 
-                thread {
-                    handleClientConnection(clientSocket)
+                        thread {
+                            handleClientConnection(clientSocket)
+                        }
+                    }
+
+                } catch (e: BindException) {
+                    Log.e(TAG, "Error: Port $serverPort is not available. Choose a different port.")
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error: An I/O error occurred while starting the server.", e)
+                } catch (e: SecurityException) {
+                    Log.e(TAG, "Error: Insufficient permissions to start the server.")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error: Unexpected exception occurred.", e)
                 }
             }
-        } catch (e: BindException) {
-            Log.e(TAG, "Error: Port $serverPort is not available. Choose a different port.")
-        } catch (e: IOException) {
-            Log.e(TAG, "Error: An I/O error occurred while starting the server.", e)
-        } catch (e: SecurityException) {
-            Log.e(TAG, "Error: Insufficient permissions to start the server.")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error: Unexpected exception occurred.", e)
         }
+    }
 
+    fun stopServer() {
+        isServerRunning = false
+        // Optionally, you may want to interrupt the server thread
+        serverThread?.interrupt()
     }
 
     private fun handleClientConnection(clientSocket: Socket)
@@ -70,6 +90,7 @@ object ServerSocketHandler
                     totalBytesRead += bytesRead
                 }
 
+                imageReceivedCallback.onImageReceived(file.toString())
                 fos.close()
                 println("File received: ${file.absolutePath}")
             }

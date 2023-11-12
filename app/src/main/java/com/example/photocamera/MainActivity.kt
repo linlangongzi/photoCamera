@@ -37,8 +37,7 @@ import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 
-class MainActivity : AppCompatActivity()
-{
+class MainActivity() : AppCompatActivity(), ImageReceivedCallback{
 
     private lateinit var binding: ActivityMainBinding
 //    private lateinit var binding: ActivityMainRedesignBinding
@@ -49,7 +48,6 @@ class MainActivity : AppCompatActivity()
     private lateinit var adapter: CustomAdapter
 
     private var imageCapture : ImageCapture ?= null
-    private var serverThread: Thread? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -64,9 +62,9 @@ class MainActivity : AppCompatActivity()
         // RequestCameraPermission
         requestCameraPermission()
         //
-        serverThread = thread {
-            ServerSocketHandler.startServer(NetworkUtils.getLocalPortNumber())
-        }
+
+        ServerSocketHandler.init(this)
+        ServerSocketHandler.startServer(NetworkUtils.getLocalPortNumber())
 
         showMyIp()
 
@@ -84,6 +82,17 @@ class MainActivity : AppCompatActivity()
             lifecycleScope.launch {
                 sendPhoto()
             }
+        }
+    }
+
+    override fun onImageReceived(imagePath: String)
+    {
+        runOnUiThread {
+            // Update UI on the main thread
+            // For example, update a list of image paths and refresh the ListView
+            updateListView()
+//            imagePaths.add(imagePath)
+//            customAdapter.notifyDataSetChanged()
         }
     }
 
@@ -148,15 +157,27 @@ class MainActivity : AppCompatActivity()
         val ipAddress = binding.editTextIp.text
         val receiverServerPort = binding.editTextPort.text.toString()
         val paths = getSelectedPaths()
-        if(paths.isNotEmpty()) {
-            if (isValidIpAddress(ipAddress.toString())) {
-                NetworkUtils.sendSelectedPictures(paths, ipAddress.toString(), receiverServerPort.toInt(), this)
-            } else {
-                Toast.makeText(this@MainActivity, "Invalid IP Address $ipAddress", Toast.LENGTH_SHORT).show()
+        if (receiverServerPort.isNotEmpty()) {
+            try {
+                val port = receiverServerPort.toInt()
+                if(paths.isNotEmpty()) {
+                    if (isValidIpAddress(ipAddress.toString())) {
+                        NetworkUtils.sendSelectedPictures(paths, ipAddress.toString(), port, this)
+                    } else {
+                        Toast.makeText(this@MainActivity, "Invalid IP Address $ipAddress", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this@MainActivity, "No Picture Selected", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: NumberFormatException) {
+                // Handle the case where the port is not a valid integer
+                Toast.makeText(this@MainActivity, "Invalid Port Number", Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(this@MainActivity, "No Picture Selected", Toast.LENGTH_SHORT).show()
+            // Handle the case where the input string is empty
+            Toast.makeText(this@MainActivity, "Port Number Cannot be empty", Toast.LENGTH_SHORT).show()
         }
+
     }
 
     private fun getSelectedPaths(): List<String>
@@ -320,7 +341,7 @@ class MainActivity : AppCompatActivity()
 
     override fun onDestroy() {
         try {
-            serverThread?.interrupt()
+            ServerSocketHandler.stopServer()
             cameraExecutors.shutdown()
             cameraExecutors.awaitTermination(5, TimeUnit.SECONDS) // Adjust the timeout as needed
         } catch (e: InterruptedException) {
@@ -328,4 +349,5 @@ class MainActivity : AppCompatActivity()
         }
         super.onDestroy()
     }
+
 }
