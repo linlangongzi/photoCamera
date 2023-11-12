@@ -1,8 +1,9 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">photoCamera</string>
     <string name="retake">Retake</string>
     <string name="camera">Take Photo</string>
     <string name="cancel">Cancel</string>
+    <string name="share">Share</string>
     <string name="ip">Receiver IP Address 0.0.0.0</string>
     <string name="port">Receiver Server Port</string>
 </resources>
