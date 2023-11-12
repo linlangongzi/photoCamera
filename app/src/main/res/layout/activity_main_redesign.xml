@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    tools:ignore="ExtraText">
+
+    <!-- Camera Preview -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/cameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.camera.view.PreviewView>
+
+    <!-- Capture Button -->
+    <Button
+        android:id="@+id/captureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/transparent_frame"
+        android:drawableTop="@android:drawable/ic_menu_camera"
+        android:text="@string/camera"
+    />
+
+    <ImageView
+        android:id="@+id/photoPreview"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="right|bottom"
+        android:layout_marginRight="56dp"
+        android:layout_marginBottom="25dp"
+        />
+
+</FrameLayout>

@@ -1,0 +1,9 @@
+<!-- res/drawable/transparent_frame.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:shape="oval">
+    <solid android:color="@android:color/transparent"/>
+    <stroke
+        android:color="#FFFFFF"
+        android:width="5dp"/>
+</shape>
