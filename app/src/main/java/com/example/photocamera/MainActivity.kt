@@ -24,7 +24,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.lifecycle.lifecycleScope
 
 import kotlinx.coroutines.launch
-import kotlin.concurrent.thread
 import java.io.File
 import java.net.InetAddress
 import java.net.NetworkInterface
@@ -37,7 +36,7 @@ import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 
-class MainActivity() : AppCompatActivity(), ImageReceivedCallback{
+class MainActivity() : AppCompatActivity(), ImageReceivedCallback {
 
     private lateinit var binding: ActivityMainBinding
 //    private lateinit var binding: ActivityMainRedesignBinding
