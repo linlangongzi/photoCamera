@@ -11,7 +11,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import java.io.File
 
-class CustomAdapter(context: Context, resource: Int, textViewResourceId: Int, objects: MutableList<String>) :
+class CListViewAdapter(context: Context, resource: Int, textViewResourceId: Int, objects: MutableList<String>) :
     ArrayAdapter<String>(context, resource, textViewResourceId, objects) {
 
     private val checkedState = mutableMapOf<Int, Boolean>()
@@ -37,7 +37,7 @@ class CustomAdapter(context: Context, resource: Int, textViewResourceId: Int, ob
         val rowView = inflater.inflate(R.layout.list_item_layout, parent, false)
 
         val imageView = rowView.findViewById<ImageView>(R.id.imageViewItem)
-        val textView = rowView.findViewById<TextView>(R.id.textViewItem)
+        val textView = rowView.findViewById<TextView>(R.id.photoPathItem)
         val checkBox = rowView.findViewById<CheckBox>(R.id.checkBoxItem)
 
         val filePath = getItem(position)

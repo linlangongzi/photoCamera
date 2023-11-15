@@ -16,7 +16,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildToolsVersion = "30.0.3"
     buildFeatures {
         viewBinding = true
     }
@@ -50,8 +50,9 @@ dependencies {
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.github.bumptech.glide:glide:4.12.0")
-//    kapt('com.github.bumptech.glide:compiler:4.12.0')
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
+//    kapt('com.github.bumptech.glide:compiler:4.12.0')
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

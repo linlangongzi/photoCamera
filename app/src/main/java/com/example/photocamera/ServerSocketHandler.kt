@@ -6,7 +6,6 @@ import java.io.DataInputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Math.min
 import java.net.BindException
 import java.net.ServerSocket
 import java.net.Socket
@@ -19,9 +18,11 @@ object ServerSocketHandler
     private var serverThread: Thread? = null
     private var isServerRunning = false
 
-    fun init(callback: ImageReceivedCallback) {
+    fun init(callback: ImageReceivedCallback)
+    {
         imageReceivedCallback = callback
     }
+
     fun startServer(serverPort: Int)
     {
         // Check if the server thread is already running

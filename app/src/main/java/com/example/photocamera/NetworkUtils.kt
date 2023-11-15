@@ -1,27 +1,17 @@
 package com.example.photocamera
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.DataOutputStream
-import java.io.File
-import java.io.IOException
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
 import java.lang.Exception
-import java.net.ConnectException
+import java.net.InetAddress
+import java.net.NetworkInterface
 import java.net.ServerSocket
-import java.net.Socket
+import java.util.Enumeration
+import java.util.regex.Pattern
 
 object NetworkUtils
 {
-//    class MyAppDirectoryProvider(private val context: Context) {
-//        fun getAppDirectory(): File {
-//            return context.filesDir
-//        }
-//    }
 
     fun getLocalPortNumber(): Int
     {
@@ -40,57 +30,48 @@ object NetworkUtils
         return -1 // Indicates an error if we couldn't obtain the port number
     }
 
-    suspend fun sendSelectedPictures(selectedPaths: List<String>, receiverIp: String, receiverPort: Int, context: Context) {
-        // GlobalScope.launch(Dispatchers.IO) starts a coroutine in the IO dispatcher,
-        // which is suitable for performing IO-bound operations, such as socket operations.
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                // Connect to the server
-                val socket = Socket(receiverIp, receiverPort)
-                val outputStream = socket.getOutputStream()
-                val dos = DataOutputStream(outputStream)
+    fun getMyIPAddress(applicationContext : Context): String {
 
-                if (socket.isConnected) {
-                    // Send the number of files to expect
-                    dos.writeInt(selectedPaths.size)
+        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiInfo: WifiInfo? = wifiManager.connectionInfo
 
-                    // Iterate through selected paths and send each picture
-                    for (path in selectedPaths) {
-                        val file = File(path)
-                        if (file.exists()) {
-                            // Send the file name and length
-                            dos.writeUTF(file.name)
-                            dos.writeInt(file.length().toInt())
-
-                            // Read the file content into a byte array
-                            val fileBytes = file.readBytes()
-
-                            // Send the file content
-                            dos.write(fileBytes, 0, fileBytes.size)
-                        }
+        if (wifiInfo != null && wifiInfo.networkId != -1) {
+            // Using WIFI
+            val ipAddress = wifiInfo.ipAddress
+            return InetAddress.getByAddress(
+                byteArrayOf(
+                    (ipAddress and 0xFF).toByte(),
+                    (ipAddress shr 8 and 0xFF).toByte(),
+                    (ipAddress shr 16 and 0xFF).toByte(),
+                    (ipAddress shr 24 and 0xFF).toByte()
+                )
+            ).hostAddress!!
+        } else {
+            // Using Cellar Data
+            val interfaces: Enumeration<NetworkInterface> = NetworkInterface.getNetworkInterfaces()
+            while (interfaces.hasMoreElements()) {
+                val networkInterface: NetworkInterface = interfaces.nextElement()
+                val addresses: Enumeration<InetAddress> = networkInterface.inetAddresses
+                while (addresses.hasMoreElements()) {
+                    val address: InetAddress = addresses.nextElement()
+                    if (!address.isLoopbackAddress && address.hostAddress.indexOf(':') < 0) {
+                        return address.hostAddress
                     }
-                } else {
-                    Log.d(Constants.TAG, "Can not connect to the server at : ${receiverIp}")
                 }
-
-                // Close the DataOutputStream and socket
-                dos.close()
-                socket.close()
-            } catch (e: ConnectException) {
-                showErrorOnMainThread("Connection refused. Make sure the server is running.", context)
-            } catch (e: IOException) {
-                showErrorOnMainThread("IO exception occurred: ${e.message}", context)
             }
         }
+
+        return "N/A"
     }
 
-    private suspend fun showErrorOnMainThread(errorMessage: String, context: Context)
+    fun isValidIpAddress(input: String): Boolean
     {
-        // withContext(Dispatchers.Main) function to switch to the main (UI) thread when needed.
-        // This is especially useful when you need to perform UI-related operations from a background thread or coroutine.
-        withContext(Dispatchers.Main) {
-            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-        }
+        val ipAddressPattern =
+            buildString {
+        append("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
     }
-
+        val pattern = Pattern.compile(ipAddressPattern)
+        val matcher = pattern.matcher(input)
+        return matcher.matches()
+    }
 }

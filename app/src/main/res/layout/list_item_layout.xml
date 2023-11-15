@@ -22,7 +22,7 @@
             android:scaleType="centerCrop"/>
 
         <TextView
-            android:id="@+id/textViewItem"
+            android:id="@+id/photoPathItem"
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:layout_weight="1"
