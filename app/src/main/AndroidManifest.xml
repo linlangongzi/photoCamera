@@ -35,6 +35,11 @@
         <activity
             android:name=".ShareActivity"
             android:exported="true">
+
+            <intent-filter>
+                <action android:name="com.example.photocamera.IMAGE_RECEIVED" />
+            </intent-filter>
+
         </activity>
 
         <provider

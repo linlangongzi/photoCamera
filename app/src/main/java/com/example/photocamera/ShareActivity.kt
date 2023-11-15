@@ -92,17 +92,17 @@ class ShareActivity : AppCompatActivity()
         return itemList.asReversed()
     }
 
-    override fun onResume()
-    {
-        super.onResume()
-        val filter = IntentFilter(Constants.IMAGE_RECEIEVED_INTENT_FILTER)
-        registerReceiver(receiver, filter)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unregisterReceiver(receiver)
-    }
+//    override fun onResume()
+//    {
+//        super.onResume()
+//        val filter = IntentFilter(Constants.IMAGE_RECEIEVED_INTENT_FILTER)
+//        registerReceiver(receiver, filter)
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        unregisterReceiver(receiver)
+//    }
     private fun updateListView()
     {
         val newItemList = getItemList().reversed()
