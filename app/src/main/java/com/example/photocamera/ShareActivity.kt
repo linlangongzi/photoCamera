@@ -66,7 +66,6 @@ class ShareActivity : AppCompatActivity()
 
         adapter = CRecyclerViewAdapter(getItemList())
         shareBinding.photoListRecyclerView.adapter = adapter
-        adapter.addAll(getItemList())
 
         shareBinding.shareBtn.setOnClickListener{
             lifecycleScope.launch {
@@ -90,7 +89,7 @@ class ShareActivity : AppCompatActivity()
         for (filePath in allFilePathsFromDirectory) {
             itemList.add(ImageSelectionItem(filePath, FileUtil.getFileNameFromPath(filePath), false))
         }
-        return itemList
+        return itemList.asReversed()
     }
 
     override fun onResume()
