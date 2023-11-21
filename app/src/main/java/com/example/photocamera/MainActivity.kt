@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.photocamera.databinding.ActivityMainBinding
 
-class MainActivity() : AppCompatActivity(), ImageReceivedCallback
+class MainActivity : AppCompatActivity(), ImageReceivedCallback
 {
 
     private lateinit var binding: ActivityMainBinding
@@ -38,7 +38,7 @@ class MainActivity() : AppCompatActivity(), ImageReceivedCallback
         ServerSocketHandler.init(this)
         ServerSocketHandler.startServer(NetworkUtils.getLocalPortNumber())
 
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        sharedViewModel = ViewModelProvider(this)[SharedViewModel::class.java]
 
         binding.captureButton.setOnClickListener {
             cameraManager.takePhoto(
