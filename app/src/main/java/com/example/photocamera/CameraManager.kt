@@ -74,7 +74,7 @@ object CameraManager
     fun takePhoto(context: Context, onPhotoCaptured: (Bitmap) -> Unit, onPhotoSaved: (String) -> Unit)
     {
         val imageCapture = imageCapture ?: return
-        val photoFile = FileUtil.createJPGImageWithPattern(FileUtil.getOutputDirectory(context), Constants.FILE_NAME_PATTERN)
+        val photoFile = FileUtils.createJPGImageWithPattern(FileUtils.getOutputDirectory(context), Constants.FILE_NAME_PATTERN)
 
         cameraExecutors.execute {
             try {

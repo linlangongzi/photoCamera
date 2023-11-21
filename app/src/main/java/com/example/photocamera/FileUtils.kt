@@ -6,7 +6,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-object FileUtil
+object FileUtils
 {
     fun createJPGImageWithPattern(baseFolder: File, pattern: String): File
     {

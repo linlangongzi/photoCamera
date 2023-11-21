@@ -3,7 +3,6 @@ package com.example.photocamera
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -59,7 +58,7 @@ class ShareActivity : AppCompatActivity()
         })
 
         // Initialze Output Directory
-        outputDirectory = FileUtil.getOutputDirectory(this)
+        outputDirectory = FileUtils.getOutputDirectory(this)
 
         layoutManager = LinearLayoutManager(this)
         shareBinding.photoListRecyclerView.layoutManager = layoutManager
@@ -84,10 +83,10 @@ class ShareActivity : AppCompatActivity()
     private fun getItemList(): MutableList<ImageSelectionItem>
     {
         val itemList = mutableListOf<ImageSelectionItem>()
-        val allFilePathsFromDirectory = FileUtil.getAllFilePathsFromDirectory(outputDirectory)
+        val allFilePathsFromDirectory = FileUtils.getAllFilePathsFromDirectory(outputDirectory)
 
         for (filePath in allFilePathsFromDirectory) {
-            itemList.add(ImageSelectionItem(filePath, FileUtil.getFileNameFromPath(filePath), false))
+            itemList.add(ImageSelectionItem(filePath, FileUtils.getFileNameFromPath(filePath), false))
         }
         return itemList.asReversed()
     }

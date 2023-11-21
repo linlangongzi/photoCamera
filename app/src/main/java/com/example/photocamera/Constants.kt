@@ -5,6 +5,7 @@ import android.Manifest
 object Constants
 {
     const val TAG = "cameraX"
+    const val SERVER_PORT = 12345
     const val FILE_NAME_PATTERN = "yyyyMMdd-HH-mm-ss"
     const val REQUEST_PERMISSIONS_CODE = 100
     // Specify the directory path where the photos are stored
